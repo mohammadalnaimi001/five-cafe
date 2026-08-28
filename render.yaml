@@ -1,0 +1,41 @@
+# Render Blueprint — Five₅ Coffee
+#
+# The site is plain HTML/CSS/JS, so it deploys as a Render *Static Site*:
+# free, no server, no build step.
+#
+# Two ways to use this file:
+#   A) Render Dashboard → New → Blueprint → pick this repo (reads this file)
+#   B) Render Dashboard → New → Static Site → set the fields by hand:
+#        Build Command     : (leave empty)
+#        Publish Directory : .
+#
+# Requires index.html to sit at the REPO ROOT (see README).
+
+services:
+  - type: web
+    name: five5-souq-yard
+    runtime: static
+    buildCommand: "echo 'static site — nothing to build'"
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: false
+
+    routes:
+      # pretty URL for the staff dashboard: /admin -> /admin.html
+      - type: rewrite
+        source: /admin
+        destination: /admin.html
+
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      # keep the staff dashboard out of Google
+      - path: /admin.html
+        name: X-Robots-Tag
+        value: noindex, nofollow
